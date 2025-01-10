@@ -45,4 +45,16 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Relationship: A user can send many messages
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    // Relationship: A user can reply to many messages (through the Message model)
+    public function replies()
+    {
+        return $this->hasMany(Message::class, 'parent_id');
+    }
 }
