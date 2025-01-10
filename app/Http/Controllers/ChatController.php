@@ -17,7 +17,7 @@ class ChatController extends Controller
         // Get all messages from the chat room
         $messages = $chatRoom->messages()->whereNull('parent_id')->latest()->get();
 
-        return view('chat.inner', compact('chatRoom', 'messages'));
+        return view('chat.container', compact('chatRoom', 'messages'));
     }
 
     public function storeMessage(Request $request)
@@ -36,7 +36,7 @@ class ChatController extends Controller
         ]);
         $message->save();
 
-        return redirect()->route('chat.inner');
+        return redirect()->route('chat.container');
     }
 
     public function storeReply(Request $request)
@@ -59,6 +59,6 @@ class ChatController extends Controller
         ]);
         $message->save();
 
-        return redirect()->route('chat.inner');
+        return redirect()->route('chat.container');
     }
 }

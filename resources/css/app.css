@@ -1,48 +1,136 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+}
 
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+/* Chat Room Title */
+.chat-room-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* Chat Box */
 .chat-box {
-    background-color: #f9fafb;
+    max-height: 500px;
+    overflow-y: scroll;
+    padding: 1rem;
+    background-color: #f8f8f8;
     border-radius: 8px;
-    padding: 10px;
-    max-height: 400px;
-    overflow-y: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.message {
-    background-color: #e2e8f0;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+/* Message */
+.chat-message {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+    position: relative;
 }
 
-.reply {
-    background-color: #cbd5e1;
-    padding: 8px;
-    margin-left: 20px;
-    margin-top: 5px;
-    border-radius: 5px;
+.chat-message strong {
+    display: block;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
 }
 
-textarea {
+/* Reply Section */
+.reply-text-area {
     width: 100%;
-    padding: 8px;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 6px;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-top: 10px;
+    resize: vertical;
 }
 
-button {
-    background-color: #3182ce;
+.reply-button {
+    padding: 0.5rem 1rem;
+    background-color: #1e40af;
     color: white;
-    padding: 10px 15px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
 }
 
-button:hover {
+.reply-button:hover {
+    background-color: #1d4ed8;
+}
+
+/* Replies */
+.reply {
+    background-color: #f1f1f1;
+    padding: 0.8rem;
+    margin-top: 0.5rem;
+    border-radius: 6px;
+}
+
+/* Footer (Message Form) */
+.footer {
+    background-color: #2d3748;
+    padding: 1rem;
+    margin-top: auto;
+}
+
+.footer .container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.footer form {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer textarea {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    resize: vertical;
+    border: 1px solid #ccc;
+}
+
+.footer .send-message-button {
+    padding: 1rem;
+    background-color: #3182ce;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.footer .send-message-button:hover {
     background-color: #2b6cb0;
 }
 
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+    .chat-box {
+        max-height: 400px;
+        padding: 0.8rem;
+    }
+
+    .reply-text-area {
+        font-size: 0.9rem;
+    }
+
+    .footer {
+        padding: 0.8rem;
+    }
+
+    .footer textarea {
+        padding: 0.8rem;
+    }
+
+    .footer .send-message-button {
+        padding: 1rem;
+    }
+}
