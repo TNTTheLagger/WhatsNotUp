@@ -15,7 +15,7 @@ class MessageSent implements ShouldBroadcast
 
 
     public $message;
-    //public $afterCommit = true;
+    public $afterCommit = true;
 
     public function __construct(Message $message)
     {

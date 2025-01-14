@@ -14,6 +14,7 @@
                         style="max-width: 75%; padding: 12px 16px; border-radius: 16px; color: white; font-size: 14px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); background-color: {{ $message->user->id === auth()->id() ? '#25D366' : '#34B7F1' }};">
                         <strong>{{ $message->user->id === auth()->id() ? 'You' : $message->user->name }}</strong>
                         <p class="mt-1">{{ $message->content }}</p>
+                        <span style="font-size: 12px; color: #ccc;">{{ $message->created_at }}</span>
                     </div>
                 </div>
             @endforeach
@@ -69,9 +70,16 @@
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 messageForm.submit();
+
+                // Clear the form after submission
+                messageInput.value = '';
             }
         });
 
+        // Clear the form after a normal button click
+        messageForm.addEventListener('submit', function() {
+            messageInput.value = '';
+        });
         // Auto-scroll on page load
         scrollToBottom();
     </script>
