@@ -35,6 +35,7 @@
         const chatContainer = document.getElementById('chat-container');
         const messageForm = document.getElementById('message-form');
         const messageInput = document.getElementById('message-input');
+
         document.addEventListener('DOMContentLoaded', function() {
             console.log(window.Echo); // Check if Echo is available
             if (window.Echo) {
@@ -45,7 +46,8 @@
                             <div class="flex ${isOwnMessage ? 'justify-end' : 'justify-start'}">
                                 <div style="max-width: 75%; padding: 12px 16px; border-radius: 16px; color: white; font-size: 14px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); background-color: ${isOwnMessage ? '#25D366' : '#34B7F1'};">
                                     <strong>${isOwnMessage ? 'You' : event.user.name}</strong>
-                                    <p class="mt-1">${event.message.content}</p>
+                                    <p class="mt-1">${event.content}</p>
+                                    <span style="font-size: 12px; color: #ccc;">${event.created_at}</span>
                                 </div>
                             </div>
                         `;
@@ -56,10 +58,12 @@
                 console.error("window.Echo is not defined");
             }
         });
+
         // Scroll to the bottom of the chat container
         const scrollToBottom = () => {
             chatContainer.scrollTop = chatContainer.scrollHeight;
         };
+
         // Handle form submission with Enter key
         messageInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -67,8 +71,10 @@
                 messageForm.submit();
             }
         });
+
         // Auto-scroll on page load
         scrollToBottom();
     </script>
+
 
 </x-app-layout>
