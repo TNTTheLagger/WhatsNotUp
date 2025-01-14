@@ -10,7 +10,7 @@ class Message extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'room_id', 'content', 'parent_id',
+        'user_id', 'chat_room_id', 'content', 'parent_id',
     ];
 
     // Relationship: A message belongs to one user (sender)
@@ -22,7 +22,7 @@ class Message extends Model
     // Relationship: A message belongs to one chat room
     public function chatRoom()
     {
-        return $this->belongsTo(ChatRoom::class, 'room_id');
+        return $this->belongsTo(ChatRoom::class, 'chat_room_id');
     }
 
     // Relationship: A message can have one parent message (if it's a reply)

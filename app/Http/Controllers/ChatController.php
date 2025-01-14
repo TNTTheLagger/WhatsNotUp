@@ -6,6 +6,8 @@ use App\Models\ChatRoom;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\MessageSent;
+
 
 class ChatController extends Controller
 {
@@ -21,23 +23,23 @@ class ChatController extends Controller
     }
 
     public function storeMessage(Request $request)
-    {
-        // Validate the message input
-        $request->validate([
-            'content' => 'required|string|max:255',
-        ]);
+{
+    $request->validate([
+        'content' => 'required|string|max:255',
+    ]);
 
-        // Create a new message
-        $chatRoom = ChatRoom::first();  // Get the first (or specific) chat room
-        $message = new Message([
-            'user_id' => Auth::id(),
-            'room_id' => $chatRoom->id,
-            'content' => $request->input('content'),
-        ]);
-        $message->save();
+    $chatRoom = ChatRoom::first();  // Get the first chat room
+    $message = Message::create([
+        'user_id' => Auth::id(),
+        'chat_room_id' => $chatRoom->id,
+        'content' => $request->input('content'),
+    ]);
 
-        return redirect()->route('chat.container');
-    }
+    // Broadcast the message
+    broadcast(new MessageSent($message));
+
+    return redirect()->back();
+}
 
     public function storeReply(Request $request)
     {

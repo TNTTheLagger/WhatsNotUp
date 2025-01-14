@@ -21,9 +21,9 @@
 
         <!-- Footer (Message Input) -->
         <footer class="bg-gray-200 p-4">
-            <form action="{{ route('chat.storeMessage') }}" method="POST" class="flex items-center">
+            <form id="message-form" action="{{ route('chat.storeMessage') }}" method="POST" class="flex items-center">
                 @csrf
-                <textarea name="content" rows="1" placeholder="Type a message..." required
+                <textarea id="message-input" name="content" rows="1" placeholder="Type a message..." required
                     class="flex-1 resize-none border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300 px-3 py-2"></textarea>
                 <button type="submit"
                     class="ml-2 px-4 py-2 bg-green-500 text-white font-semibold rounded-lg">Send</button>
@@ -31,29 +31,44 @@
         </footer>
     </div>
 
-    <style>
-        /* Adjusting bubble sizes */
-        #chat-container div {
-            margin-bottom: 10px;
-        }
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const messageForm = document.getElementById('message-form');
+        const messageInput = document.getElementById('message-input');
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log(window.Echo); // Check if Echo is available
+            if (window.Echo) {
+                window.Echo.channel(`chat-room.{{ $chatRoom->id }}`)
+                    .listen('MessageSent', (event) => {
+                        const isOwnMessage = event.user.id === {{ auth()->id() }};
+                        const messageHtml = `
+                            <div class="flex ${isOwnMessage ? 'justify-end' : 'justify-start'}">
+                                <div style="max-width: 75%; padding: 12px 16px; border-radius: 16px; color: white; font-size: 14px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); background-color: ${isOwnMessage ? '#25D366' : '#34B7F1'};">
+                                    <strong>${isOwnMessage ? 'You' : event.user.name}</strong>
+                                    <p class="mt-1">${event.message.content}</p>
+                                </div>
+                            </div>
+                        `;
+                        chatContainer.insertAdjacentHTML('beforeend', messageHtml);
+                        scrollToBottom();
+                    });
+            } else {
+                console.error("window.Echo is not defined");
+            }
+        });
+        // Scroll to the bottom of the chat container
+        const scrollToBottom = () => {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        };
+        // Handle form submission with Enter key
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                messageForm.submit();
+            }
+        });
+        // Auto-scroll on page load
+        scrollToBottom();
+    </script>
 
-        /* Custom scrollbar for chat container */
-        #chat-container {
-            scrollbar-width: thin;
-            scrollbar-color: #cbd5e0 transparent;
-        }
-
-        #chat-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #chat-container::-webkit-scrollbar-thumb {
-            background-color: #cbd5e0;
-            border-radius: 4px;
-        }
-
-        #chat-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-    </style>
 </x-app-layout>
