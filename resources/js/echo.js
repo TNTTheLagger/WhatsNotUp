@@ -8,5 +8,4 @@ window.Echo = new Echo({
     broadcaster: 'pusher',
     key: window.PUSHER_APP_KEY,
     cluster: window.PUSHER_APP_CLUSTER,
-    forceTLS: true,
 });
