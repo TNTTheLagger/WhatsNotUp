@@ -21,10 +21,5 @@ class BroadcastServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Broadcast::routes();
-
-        Broadcast::channel('chat-room.{roomId}', function ($user, $roomId) {
-            // Replace with authorization logic if needed
-            return true;
-        });
     }
 }

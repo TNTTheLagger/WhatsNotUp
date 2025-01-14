@@ -7,7 +7,7 @@
 
         <!-- Chat Messages -->
         <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-4 bg-white">
-            @foreach ($messages->take(4)->reverse() as $message)
+            @foreach ($messages->reverse() as $message)
                 <div class="flex {{ $message->user->id === auth()->id() ? 'justify-end' : 'justify-start' }}">
                     <!-- Chat Bubble -->
                     <div

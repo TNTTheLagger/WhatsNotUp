@@ -36,7 +36,9 @@ class ChatController extends Controller
     ]);
 
     // Broadcast the message
-    broadcast(new MessageSent($message));
+    event(new \App\Events\MessageSent($message));
+    broadcast(new MessageSent($message))->toOthers();
+    MessageSent::dispatch($message);
 
     return redirect()->back();
 }
