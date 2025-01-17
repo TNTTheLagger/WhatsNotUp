@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('content');
             $table->foreignId('parent_id')->nullable()->constrained('messages')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes(); // Add soft deletes column
         });
     }
 

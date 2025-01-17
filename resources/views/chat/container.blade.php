@@ -26,7 +26,7 @@
                 @csrf
                 <textarea id="message-input" name="content" rows="1" placeholder="Type a message..." required
                     class="flex-1 resize-none border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300 px-3 py-2"></textarea>
-                <button type="submit"
+                <button id="send-button" type="button"
                     class="ml-2 px-4 py-2 bg-green-500 text-white font-semibold rounded-lg">Send</button>
             </form>
         </footer>
@@ -36,6 +36,7 @@
         const chatContainer = document.getElementById('chat-container');
         const messageForm = document.getElementById('message-form');
         const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
 
         document.addEventListener('DOMContentLoaded', function() {
             console.log(window.Echo); // Check if Echo is available
@@ -44,14 +45,14 @@
                     .listen('MessageSent', (event) => {
                         const isOwnMessage = event.user.id === {{ auth()->id() }};
                         const messageHtml = `
-                            <div class="flex ${isOwnMessage ? 'justify-end' : 'justify-start'}">
-                                <div style="max-width: 75%; padding: 12px 16px; border-radius: 16px; color: white; font-size: 14px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); background-color: ${isOwnMessage ? '#25D366' : '#34B7F1'};">
-                                    <strong>${isOwnMessage ? 'You' : event.user.name}</strong>
-                                    <p class="mt-1">${event.content}</p>
-                                    <span style="font-size: 12px; color: #ccc;">${event.created_at}</span>
-                                </div>
+                        <div class="flex ${isOwnMessage ? 'justify-end' : 'justify-start'}">
+                            <div style="max-width: 75%; padding: 12px 16px; border-radius: 16px; color: white; font-size: 14px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); background-color: ${isOwnMessage ? '#25D366' : '#34B7F1'};">
+                                <strong>${isOwnMessage ? 'You' : event.user.name}</strong>
+                                <p class="mt-1">${event.content}</p>
+                                <span style="font-size: 12px; color: #ccc;">${event.created_at}</span>
                             </div>
-                        `;
+                        </div>
+                    `;
                         chatContainer.insertAdjacentHTML('beforeend', messageHtml);
                         scrollToBottom();
                     });
@@ -65,21 +66,48 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         };
 
-        // Handle form submission with Enter key
-        messageInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                messageForm.submit();
+        // Handle AJAX submission on button click
+        sendButton.addEventListener('click', async function() {
+            const formData = new FormData(messageForm);
 
-                // Clear the form after submission
+            try {
+                const response = await fetch(messageForm.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content'),
+                        'Accept': 'application/json',
+                    },
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to send the message');
+                }
+
+                const data = await response.json();
+
+                // Update chat container with the new message
+                const messageHtml = `
+                <div class="flex justify-end">
+                    <div style="max-width: 75%; padding: 12px 16px; border-radius: 16px; color: white; font-size: 14px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); background-color: #25D366;">
+                        <strong>You</strong>
+                        <p class="mt-1">${data.content}</p>
+                        <span style="font-size: 12px; color: #ccc;">${data.created_at}</span>
+                    </div>
+                </div>
+            `;
+                chatContainer.insertAdjacentHTML('beforeend', messageHtml);
+
+                // Clear the input field
                 messageInput.value = '';
+                scrollToBottom();
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Failed to send the message. Please try again.');
             }
         });
 
-        // Clear the form after a normal button click
-        messageForm.addEventListener('submit', function() {
-            messageInput.value = '';
-        });
         // Auto-scroll on page load
         scrollToBottom();
     </script>

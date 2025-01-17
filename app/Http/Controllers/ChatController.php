@@ -17,7 +17,7 @@ class ChatController extends Controller
         $chatRoom = ChatRoom::first();
 
         // Get all messages from the chat room
-        $messages = $chatRoom->messages()->whereNull('parent_id')->latest()->get();
+        $messages = $chatRoom->messages()->with('User')->whereNull('parent_id')->latest()->get();
 
         return view('chat.container', compact('chatRoom', 'messages'));
     }
