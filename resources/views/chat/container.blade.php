@@ -14,7 +14,6 @@
                         style="max-width: 75%; padding: 12px 16px; border-radius: 16px; color: white; font-size: 14px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); background-color: {{ $message->user->id === auth()->id() ? '#25D366' : '#34B7F1' }};">
                         <strong>{{ $message->user->id === auth()->id() ? 'You' : $message->user->name }}</strong>
                         <p class="mt-1">{{ $message->content }}</p>
-                        <span style="font-size: 12px; color: #ccc;">{{ $message->created_at }}</span>
                     </div>
                 </div>
             @endforeach
@@ -66,45 +65,11 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         };
 
-        // Handle AJAX submission on button click
-        sendButton.addEventListener('click', async function() {
-            const formData = new FormData(messageForm);
-
-            try {
-                const response = await fetch(messageForm.action, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content'),
-                        'Accept': 'application/json',
-                    },
-                    body: formData,
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to send the message');
-                }
-
-                const data = await response.json();
-
-                // Update chat container with the new message
-                const messageHtml = `
-                <div class="flex justify-end">
-                    <div style="max-width: 75%; padding: 12px 16px; border-radius: 16px; color: white; font-size: 14px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); background-color: #25D366;">
-                        <strong>You</strong>
-                        <p class="mt-1">${data.content}</p>
-                        <span style="font-size: 12px; color: #ccc;">${data.created_at}</span>
-                    </div>
-                </div>
-            `;
-                chatContainer.insertAdjacentHTML('beforeend', messageHtml);
-
-                // Clear the input field
-                messageInput.value = '';
-                scrollToBottom();
-            } catch (error) {
-                console.error('Error sending message:', error);
-                alert('Failed to send the message. Please try again.');
+        // Handle form submission with Enter key
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                messageForm.submit();
             }
         });
 
