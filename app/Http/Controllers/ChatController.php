@@ -38,7 +38,7 @@ class ChatController extends Controller
     // Broadcast the message
     broadcast(new MessageSent($message))->toOthers();
 
-    return redirect()->back();
+    return redirect()->back()->with('success', 'Message sent successfully!');
 }
 
     public function storeReply(Request $request)

@@ -22,7 +22,7 @@
 
         <!-- Footer (Message Input) -->
         <footer class="bg-gray-200 p-4">
-            <form id="message-form" action="{{ route('chat.storeMessage') }}" method="POST" class="flex items-center">
+            <form id="message-form" method="POST" class="flex items-center">
                 @csrf
                 <textarea id="message-input" name="content" rows="1" placeholder="Type a message..." required
                     class="flex-1 resize-none border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300 px-3 py-2"></textarea>
@@ -66,11 +66,39 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         };
 
+        const submitessageForm = () => {
+            const xhr = new XMLHttpRequest(); // Create a new XMLHttpRequest object
+            const formData = new FormData(messageForm); // Collect the form data
+
+            // Initialize the request
+            xhr.open('POST', "{{ route('chat.storeMessage') }}", true); // Replace with the correct route URL
+
+            // Set the CSRF token header
+            xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').getAttribute(
+                "content"));
+
+            // Define what happens on successful request
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    messageInput.value = '';
+                } else {
+                    console.error("Error sending message:", xhr.statusText);
+                }
+            };
+
+            // Define what happens if the request fails
+            xhr.onerror = function() {
+                console.error("Request failed:", xhr.statusText);
+            };
+
+            // Send the request with the form data
+            xhr.send(formData);
+        };
+
         // Handle form submission with Enter key
         messageInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                messageForm.submit();
+                submitessageForm();
             }
         });
 
